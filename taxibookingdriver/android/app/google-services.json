@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "1050726622963",
+    "firebase_url": "https://bachiem-e1bae-default-rtdb.firebaseio.com",
+    "project_id": "bachiem-e1bae",
+    "storage_bucket": "bachiem-e1bae.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1050726622963:android:7b8a27c376f3542bad3986",
+        "android_client_info": {
+          "package_name": "com.example.taxibooking"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1050726622963-dtnci2e4spnfhinp9j86rsds8aj41rat.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXlNIuYCGfeIRur6zpFkEMKrQKq7P97gY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1050726622963-dtnci2e4spnfhinp9j86rsds8aj41rat.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1050726622963:android:0f40fa553271cc82ad3986",
+        "android_client_info": {
+          "package_name": "com.example.taxibookingdriver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1050726622963-dtnci2e4spnfhinp9j86rsds8aj41rat.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXlNIuYCGfeIRur6zpFkEMKrQKq7P97gY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1050726622963-dtnci2e4spnfhinp9j86rsds8aj41rat.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
