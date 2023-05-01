@@ -157,7 +157,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
     // driverCurrentPosition = position;
 
     Geofire.initialize("activeDrivers");
-    Geofire.setLocation(currentUser!.uid, 16.032951, 108.220983);
+    Geofire.setLocation(currentUser!.uid, 16.033590, 108.222649);
 
     DatabaseReference reference = FirebaseDatabase.instance.ref().child("drivers").child(currentUser!.uid).child("newRideStatus");
 
@@ -169,10 +169,10 @@ class _HomeTabPageState extends State<HomeTabPage> {
   updateDriverLocationAtRealTime(){
     streamSubscriptionPosition = Geolocator.getPositionStream().listen((Position position) {
       if(isDriverActive == true){
-        Geofire.setLocation(currentUser!.uid, 16.032951, 108.220983);
+        Geofire.setLocation(currentUser!.uid, 16.033590, 108.222649);
       }
 
-      LatLng latLng = const LatLng(16.032951, 108.220983);
+      LatLng latLng = const LatLng(16.033590, 108.222649);
       newGoogleMapController!.animateCamera(CameraUpdate.newLatLng(latLng));
     });
   }

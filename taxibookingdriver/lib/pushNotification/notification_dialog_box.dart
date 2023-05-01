@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:taxibookingdriver/global/global.dart';
 import 'package:taxibookingdriver/methods/assistant_methods.dart';
 import 'package:taxibookingdriver/models/user_ride_request_information.dart';
+import 'package:taxibookingdriver/sesources/new_trip_page.dart';
 
 class NotificationDialogBox extends StatefulWidget {
 
@@ -116,7 +117,9 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
 
         AssistantMethods.pauseLiveLocationUpdates();
 
-        //Navigator.push(context, MaterialPageRoute(builder: (c) => NewTripPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (c) => NewTripPage(
+          userRideRequestDetail: widget.userRideRequestDetails,
+        )));
       }
       else{
         Fluttertoast.showToast(msg: "this Ride Request do not exist");
