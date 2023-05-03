@@ -1,12 +1,15 @@
 import 'dart:async';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:taxibookingdriver/global/global.dart';
 import 'package:taxibookingdriver/methods/assistant_methods.dart';
 import 'package:taxibookingdriver/models/user_ride_request_information.dart';
+import 'package:taxibookingdriver/splashpage/splash_page.dart';
 import 'package:taxibookingdriver/widgets/progress_dialog.dart';
 
 class NewTripPage extends StatefulWidget {
@@ -142,6 +145,96 @@ class _NewTripPageState extends State<NewTripPage> {
   // }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    saveAssignedDriverDetailsToUserRideRequest();
+  }
+
+  getDriverLocationUpdatesAtRealTime(){
+
+    LatLng oldLatLng = LatLng(0, 0);
+
+    streamSubscriptionDriverLivePosition = Geolocator.getPositionStream().listen((Position position) {
+      driverCurrentPosition = position;
+      onlineDriverCurrentPosition = position;
+
+      LatLng latLngLiveDriverPosition = LatLng(16.033590, 108.222649);
+
+      Marker animatingMarker = Marker(
+        markerId: MarkerId("AnimatedMarker"),
+        position: latLngLiveDriverPosition,
+        icon: iconAnimatedMarker!,
+        infoWindow: InfoWindow(title: "this is you position"),
+      );
+
+      setState(() {
+        CameraPosition cameraPosition = CameraPosition(target: latLngLiveDriverPosition, zoom: 18);
+        newTripGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
+        setOfMarkers.removeWhere((element) => element.markerId.value == "AnimatedMarker");
+        setOfMarkers.add(animatingMarker);
+      });
+
+      oldLatLng = latLngLiveDriverPosition;
+      updateDurationTimeAtRealTime();
+
+      Map driverLatLngDataMap = {
+        "latitude": "16.033590",
+        "longitude": "108.222649",
+      };
+      FirebaseDatabase.instance.ref().child("All Ride Requests").child(widget.userRideRequestDetail!.rideRequestId!).child("driverLocation").set(driverLatLngDataMap);
+    });
+  }
+
+  updateDurationTimeAtRealTime() async {
+
+  }
+
+  createDriverIconMarker(){
+    if(iconAnimatedMarker == null){
+      ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: Size(2, 2));
+      BitmapDescriptor.fromAssetImage(imageConfiguration, "images/car.png").then((value) {
+        iconAnimatedMarker = value;
+      });
+    }
+  }
+
+  saveAssignedDriverDetailsToUserRideRequest(){
+    DatabaseReference databaseReference = FirebaseDatabase.instance.ref().child("All Ride Requests").child(widget.userRideRequestDetail!.rideRequestId!);
+
+    Map driverLocationDataMap ={
+      "latitude": "16.033590",
+      "longitude": "108.222649",
+    };
+
+    if (databaseReference.child("driverId") != "waiting"){
+      databaseReference.child("driverLocation").set(driverLocationDataMap);
+
+      databaseReference.child("status").set("accepted");
+      databaseReference.child("driverId").set(onlineDriverData.id);
+      databaseReference.child("driverName").set(onlineDriverData.name);
+      databaseReference.child("driverPhone").set(onlineDriverData.phone);
+      databaseReference.child("ratings").set(onlineDriverData.ratings);
+      databaseReference.child("car_details").set(onlineDriverData.car_model.toString() + " " + onlineDriverData.car_number.toString() + " (" + onlineDriverData.car_color.toString() + ") ");
+
+      saveRideRequestIdToDriverHistory();
+    }
+    else{
+      Fluttertoast.showToast(msg: "This ride is already accepted by another driver. \n Reloading the App");
+      Navigator.push(context, MaterialPageRoute(builder: (c) => SplashPage()));
+    }
+  }
+
+  saveRideRequestIdToDriverHistory(){
+    DatabaseReference tripsHistioryRef = FirebaseDatabase.instance.ref().child("drivers").child(firebaseAuth.currentUser!.uid).child("tripsHistory");
+
+    tripsHistioryRef.child(widget.userRideRequestDetail!.rideRequestId!).set(true);
+  }
+
+
+  @override
   Widget build(BuildContext context) {
 
     bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
@@ -167,11 +260,11 @@ class _NewTripPageState extends State<NewTripPage> {
 
               var driverCurrentLatLng = LatLng(16.033590, 108.222649);
 
-              // var userPickUpLatLng = widget.userRideRequestDetail!.originLatLng;
-              //
-              // drawPolylineFromOriginToDestination(driverCurrentLatLng, userPickUpLatLng, darkTheme);
-              //
-              // getDriverLocationUpdatesAtRealTime();
+              var userPickUpLatLng = widget.userRideRequestDetail!.originLatLng;
+
+              //drawPolylineFromOriginToDestination(driverCurrentLatLng, userPickUpLatLng, darkTheme);
+
+              getDriverLocationUpdatesAtRealTime();
             },
           )
         ],
